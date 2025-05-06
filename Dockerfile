@@ -22,6 +22,8 @@ RUN apt update && apt install -y \
     rm -rf /var/lib/apt/lists/*
 
 # 安装 Rust 和 cargo-binutils
+ENV RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
+ENV RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 RUN cargo install cargo-binutils
