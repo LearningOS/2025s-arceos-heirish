@@ -55,7 +55,7 @@ extern crate alloc;
 
 #[cfg(feature = "alloc")]
 #[doc(no_inline)]
-pub use alloc::{boxed, collections, format, string, vec};
+pub use alloc::{boxed, collections as alloc_collections, format, string, vec};
 
 #[doc(no_inline)]
 pub use core::{arch, cell, cmp, hint, marker, mem, ops, ptr, slice, str};
@@ -71,7 +71,12 @@ pub mod sync;
 pub mod thread;
 pub mod time;
 
+mod axcollections;
 #[cfg(feature = "fs")]
 pub mod fs;
 #[cfg(feature = "net")]
 pub mod net;
+pub mod collections {
+    pub use super::alloc_collections::*;
+    pub use super::axcollections::HashMap;
+}
