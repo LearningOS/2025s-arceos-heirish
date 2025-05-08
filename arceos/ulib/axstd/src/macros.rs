@@ -9,15 +9,17 @@
 #[macro_export]
 macro_rules! print {
     ($($arg:tt)*) => {
-        $crate::io::__print_impl(format_args!($($arg)*));
+        $crate::io::__print_impl(format_args("\u{1B}[32m{}\u{1B}[m", format_args!($($arg)*)));
     }
 }
 
 /// Prints to the standard output, with a newline.
 #[macro_export]
 macro_rules! println {
-    () => { $crate::print!("\n") };
+    () => {
+        $crate::io::__print_impl("\n");
+    };
     ($($arg:tt)*) => {
-        $crate::io::__print_impl(format_args!("{}\n", format_args!($($arg)*)));
+        $crate::io::__print_impl(format_args!("\u{1B}[32m{}\u{1B}[m\n", format_args!($($arg)*)));
     }
 }

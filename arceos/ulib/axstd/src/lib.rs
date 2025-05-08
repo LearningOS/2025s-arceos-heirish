@@ -71,11 +71,13 @@ pub mod sync;
 pub mod thread;
 pub mod time;
 
+#[cfg(feature = "alloc")]
 mod axcollections;
 #[cfg(feature = "fs")]
 pub mod fs;
 #[cfg(feature = "net")]
 pub mod net;
+#[cfg(feature = "alloc")]
 pub mod collections {
     pub use super::alloc_collections::*;
     pub use super::axcollections::HashMap;
