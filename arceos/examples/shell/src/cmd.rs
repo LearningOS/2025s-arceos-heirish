@@ -27,6 +27,8 @@ const CMD_TABLE: &[(&str, CmdHandler)] = &[
     ("pwd", do_pwd),
     ("rm", do_rm),
     ("uname", do_uname),
+    ("rename", do_rename),
+    ("mv", do_mv),
 ];
 
 fn file_type_to_char(ty: FileType) -> char {
@@ -290,4 +292,52 @@ fn split_whitespace(str: &str) -> (&str, &str) {
     let str = str.trim();
     str.find(char::is_whitespace)
         .map_or((str, ""), |n| (&str[..n], str[n + 1..].trim()))
+}
+
+fn do_rename(str: &str) {
+    let (old_name, new_name) = split_whitespace(str);
+    if old_name.is_empty() || new_name.is_empty() {
+        println!("invalid input {}", str);
+        return;
+    }
+
+    fs::rename(old_name, new_name);
+}
+
+fn do_mv(str: &str) {
+    let (file_name, target_dir) = split_whitespace(str);
+    if file_name.is_empty() || target_dir.is_empty() {
+        println!("invlaid input {}", str);
+        return;
+    }
+
+    fn copy_new(src_file_name: &str, dest_file_name: &str) {
+        let mut src_file = File::open(src_file_name).unwrap();
+        let mut dst_file = File::create(dest_file_name).unwrap();
+
+        let mut buf = [0; 1024];
+        loop {
+            let n = src_file.read(&mut buf).unwrap();
+            if n > 0 {
+                dst_file.write_all(&buf[0..]).unwrap();
+            } else {
+                break;
+            }
+        }
+    }
+
+    //1.check target_dir exists
+    //2.create a file with same name as source  file in target_dir
+    //3.write source file's all content to target_dir
+    //4.remove source file
+    match fs::read_dir(target_dir) {
+        Ok(_) => {
+            let new_file_name = format!("{}/{}", target_dir, file_name);
+            copy_new(file_name, &new_file_name);
+            do_rm(file_name);
+        }
+        Err(err) => {
+            print!("read target path {} failed, error {}", target_dir, err);
+        }
+    }
 }

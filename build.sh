@@ -45,6 +45,17 @@ run_fs_ex() {
 make run A=examples/shell BLK=y
 }
 
+run_monolithic_kernel_uapp_tutor() {
+make payload
+./update_disk.sh ./payload/origin/origin
+make run A=tour/m_1_0 BLK=y
+}
+run_monolithic_kernel_uapp_tutor2() {
+make payload
+./update_disk.sh ./payload/origin/origin
+make run A=tour/m_2_0 BLK=y
+}
+
 cd arceos
 make clean
 make pflash_img
@@ -66,4 +77,8 @@ make disk_img
 #run_taskscheduler_tutor
 #run_taskscheduler_tutor1
 #run_blkdriver_tutor
-run_fs_ex
+#run_fs_ex
+
+########lesson 4
+#run_monolithic_kernel_uapp_tutor
+run_monolithic_kernel_uapp_tutor2
