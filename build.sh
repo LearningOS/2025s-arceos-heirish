@@ -55,6 +55,11 @@ make payload
 ./update_disk.sh ./payload/origin/origin
 make run A=tour/m_2_0 BLK=y
 }
+run_mmap_ex() {
+make payload
+./update_disk.sh ./payload/mapfile_c/mapfile
+make run A=exercises/sys_map BLK=y
+}
 
 cd arceos
 make clean
@@ -81,4 +86,5 @@ make disk_img
 
 ########lesson 4
 #run_monolithic_kernel_uapp_tutor
-run_monolithic_kernel_uapp_tutor2
+#run_monolithic_kernel_uapp_tutor2
+run_mmap_ex
