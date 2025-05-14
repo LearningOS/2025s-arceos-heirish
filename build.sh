@@ -44,6 +44,9 @@ make run A=tour/u_8_0 BLK=y
 run_fs_ex() {
 make run A=examples/shell BLK=y
 }
+run_fs_ex1() {
+make run A=exercises/ramfs_rename BLK=y LOG=trace
+}
 
 run_monolithic_kernel_uapp_tutor() {
 make payload
@@ -61,8 +64,14 @@ make payload
 make run A=exercises/sys_map BLK=y
 }
 
+run_mono_musl_userapp() {
+make payload
+./update_disk.sh ./payload/hello_c/hello
+make run A=tour/m_3_0 BLK=y
+}
+
 cd arceos
-make clean
+#make clean
 make pflash_img
 make disk_img
 
@@ -83,8 +92,13 @@ make disk_img
 #run_taskscheduler_tutor1
 #run_blkdriver_tutor
 #run_fs_ex
+run_fs_ex1
 
-########lesson 4
+########lesson 4 monolithic uspace
 #run_monolithic_kernel_uapp_tutor
 #run_monolithic_kernel_uapp_tutor2
-run_mmap_ex
+#run_mmap_ex
+
+
+#### lesson5 monolithic support musl-libc userapp
+run_mono_musl_userapp

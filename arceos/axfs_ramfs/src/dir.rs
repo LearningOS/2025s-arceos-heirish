@@ -7,6 +7,7 @@ use axfs_vfs::{VfsError, VfsResult};
 use spin::RwLock;
 
 use crate::file::FileNode;
+use alloc::borrow::ToOwned;
 
 /// The directory node in the RAM filesystem.
 ///
@@ -118,7 +119,7 @@ impl VfsNodeOps for DirNode {
     }
 
     fn create(&self, path: &str, ty: VfsNodeType) -> VfsResult {
-        log::debug!("create {:?} at ramfs: {}", ty, path);
+        log::debug!("create {:?} at local ramfs: {}", ty, path);
         let (name, rest) = split_path(path);
         if let Some(rest) = rest {
             match name {
@@ -165,6 +166,33 @@ impl VfsNodeOps for DirNode {
         }
     }
 
+    fn rename(&self, src_path: &str, dest_path: &str) -> VfsResult {
+        log::debug!("rename at ramfs: {} {}", src_path, dest_path);
+        let (_old_path, old_name) = split_path_name(src_path);
+        let (_new_path, new_name) = split_path_name(dest_path);
+        //currently only support rename file under the same dir
+        if old_name.is_none() || new_name.is_none() {
+            log::debug!(
+                "one of the input file name is none:{:?}, {:?}",
+                old_name,
+                new_name
+            );
+            return Err(VfsError::InvalidInput);
+        }
+
+        //TODO:check parent path is the same?
+        let (old_name, new_name) = (old_name.unwrap(), new_name.unwrap());
+        let old_node = self
+            .children
+            .read()
+            .get(old_name)
+            .ok_or(VfsError::NotFound)?
+            .clone();
+        self.children.write().insert(new_name.to_owned(), old_node);
+        self.children.write().remove(old_name);
+        Ok(())
+    }
+
     axfs_vfs::impl_vfs_dir_default! {}
 }
 
@@ -173,4 +201,8 @@ fn split_path(path: &str) -> (&str, Option<&str>) {
     trimmed_path.find('/').map_or((trimmed_path, None), |n| {
         (&trimmed_path[..n], Some(&trimmed_path[n + 1..]))
     })
+}
+fn split_path_name(path: &str) -> (&str, Option<&str>) {
+    path.rfind('/')
+        .map_or((path, None), |n| (&path[..n], Some(&path[n + 1..])))
 }
