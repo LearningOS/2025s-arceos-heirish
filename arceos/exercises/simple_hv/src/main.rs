@@ -109,9 +109,6 @@ fn vmexit_handler(ctx: &mut VmCpuRegisters) -> bool {
             prepare_guest_context(ctx);
             ctx.guest_regs.sepc += 4;
             ctx.guest_regs.gprs.set_reg(A0, 0x6688);
-            unsafe {
-                _run_guest(ctx);
-            }
         }
         Trap::Exception(Exception::LoadGuestPageFault) => {
             ax_println!(
@@ -122,9 +119,6 @@ fn vmexit_handler(ctx: &mut VmCpuRegisters) -> bool {
             prepare_guest_context(ctx);
             ctx.guest_regs.sepc += 8;
             ctx.guest_regs.gprs.set_reg(A1, 0x1234);
-            unsafe {
-                _run_guest(ctx);
-            }
         }
         _ => {
             panic!(
