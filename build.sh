@@ -70,6 +70,17 @@ make payload
 make run A=tour/m_3_0 BLK=y
 }
 
+run_hypervisor_guestos_tutor() {
+make payload
+./update_disk.sh ./payload/skernel/skernel
+make run A=tour/h_1_0 BLK=y
+}
+run_hypervisor_ex() {
+make payload
+./update_disk.sh ./payload/skernel2/skernel2
+make run A=exercises/simple_hv BLK=y
+}
+
 cd arceos
 #make clean
 make pflash_img
@@ -101,4 +112,9 @@ run_fs_ex1
 
 
 #### lesson5 monolithic support musl-libc userapp
-run_mono_musl_userapp
+#run_mono_musl_userapp
+
+
+### lesson 7 hypervisor
+#run_hypervisor_guestos_tutor
+run_hypervisor_ex
