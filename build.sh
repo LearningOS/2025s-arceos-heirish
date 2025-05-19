@@ -81,6 +81,16 @@ make payload
 make run A=exercises/simple_hv BLK=y
 }
 
+run_hypervisor_pflash_map_tutor() {
+make A=tour/u_3_0
+./update_disk.sh ./tour/u_3_0/u_3_0_riscv64-qemu-virt.bin
+
+//prepare pflash back file
+echo "pfld" > pflash_back.txt
+./update_disk.sh ./pflash_back.txt
+make run A=tour/h_2_0/ BLK=y
+}
+
 cd arceos
 #make clean
 make pflash_img
@@ -114,7 +124,9 @@ run_fs_ex1
 #### lesson5 monolithic support musl-libc userapp
 #run_mono_musl_userapp
 
-
 ### lesson 7 hypervisor
 #run_hypervisor_guestos_tutor
-run_hypervisor_ex
+#run_hypervisor_ex
+
+### lesson 8
+run_hypervisor_pflash_map_tutor
